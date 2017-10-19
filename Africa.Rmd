@@ -1,6 +1,7 @@
 ---
 title: "AfricaNotes"
-output: html_document
+output:
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,30 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(sp)
 library(raster)
-library(rgdal)
-
-# Create a function that can act on all layers of a raster, essentially a wrapper for which.min()
-maj.class <- function(x) { as.numeric( names( which.min( table(x) ) ) ) }
-
-# create 4 rasters of the same size
-r1 <- r2 <- r3 <- r4 <- raster(nrows=20, ncols=50)
-
-# generate random raster data
-r1[] <- round(runif(ncell(r1),0,2),0)
-r2[] <- runif(ncell(r2),1,4)
-r3[] <- runif(ncell(r3),2,6)
-r4[] <- runif(ncell(r4),4,18)
-
-# create a RasterStack
-r <- stack(r1,r2,r3,r4)
-
-mclass <- calc(r, maj.class)
-plot(mclass) 
-```
-
-```{r}
-rsl <- calc(r, sum)
-plot(rsl)
+suppressMessages(library(rgdal))
 ```
 
 ## Working with CHIRPS files
@@ -44,25 +22,31 @@ plot(rsl)
 # Gather all the data files into a list
 rasterlist1 <-  list.files('TIF', full.names=TRUE)
 
-# create a sigle raster from the list
-mRaster <-stack(rasterlist1)
-
-# Set the min and Max values
-mRaster <- setMinMax(mRaster)
+# create a RasterStack from the list
+sRaster <-stack(rasterlist1)
 
 # Function to set values below 0 to NA
-fun <- function(x) { x[x<0] <-NA; return(x)}
+NANegValues <- function(x) { x[x<0] <-NA; return(x)}
 
-rc2 <- calc(mRaster, fun)
+rc2 <- calc(sRaster, NANegValues)
+
+
+# Set the min and Max values
+sRaster <- setMinMax(rc2)
 
 # create histograms (for each layer of the RasterStack)
-hist(rc2, main="Distribution Rainfall values",  col= "brown", maxpixels=22000000)
+hist(sRaster, main="Distribution Rainfall values",  col= "brown", maxpixels=22000000)
 ```
 
 ```{r}
+
+meanRemovesNA <- function(x) {
+  mean(x,na.rm=T)
+}
+
 # calc into a Raster Layer
-rc3 <- calc(rc2, sum)
+rc3 <- calc(rc2, meanRemovesNA)
 
 # plot the map (SUM of rainfall values from the data files)
-plot(rc3)
+plot(rc3, main="CHIRPS anomaly")
 ```
