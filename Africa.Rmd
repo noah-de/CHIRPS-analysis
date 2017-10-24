@@ -35,7 +35,7 @@ rc2 <- calc(sRaster, NANegValues)
 sRaster <- setMinMax(rc2)
 
 # create histograms (for each layer of the RasterStack)
-hist(sRaster, main="Distribution Dekadal Rainfall values (mm)",  col= "brown", maxpixels=22000000)
+#hist(sRaster, main="Distribution Dekadal Rainfall values (mm)",  col= "brown", maxpixels=22000000)
 ```
 
 ```{r}
@@ -48,5 +48,5 @@ meanRemovesNA <- function(x) {
 rc3 <- calc(rc2, meanRemovesNA)
 
 # plot the map (SUM of rainfall values from the data files)
-plot(rc3, main="Historical Dekadal Rainfall anomaly (mm)")
+plot(rc3, main="Historical Dekadal Rainfall anomaly 1981-2017 (mm)")
 ```
