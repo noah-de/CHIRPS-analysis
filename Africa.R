@@ -4,19 +4,29 @@ library(raster)
 library(rgdal)
 
 # Gather all the data files into a list
-rasterlist1 <-  list.files('TIF', full.names=TRUE)
+rasterlist1 <-  list.files('test', full.names=TRUE)
 
-# create a sigle raster from the list
-mRaster <-stack(rasterlist1)
+# create a RasterStack from the list
+sRaster <-stack(rasterlist1)
+
+# Function to set values below 0 to NA
+#NANegValues <- function(x) { x[x<0] <-NA; return(x)}
+
+#rc2 <- calc(sRaster, NANegValues)
+
 
 # Set the min and Max values
-mRaster <- setMinMax(mRaster)
+#sRaster <- setMinMax(rc2)
 
-# create histograms
-# hist(mRaster, main="Distribution Rainfall values",  col= "brown", maxpixels=22000000)
-# col <- terrain.colors(5)
-# image(mRaster[1], zlim=c(250,375), main="Image", col=col)
+meanRemovesNA <- function(x) {
+  mean(x[x>=0],na.rm=T)
+}
 
+# calc into a Raster Layer
+xbar <- calc(sRaster, meanRemovesNA)
 
+# writeRaster(xbar,'test.tif', options=c('TFW=YES'))
+writeRaster(xbar, 'test.tif', options=c('TFW=YES'), format="GTiff", overwrite=TRUE)
 
-plot(mRaster)
+# plot the map (SUM of rainfall values from the data files)
+plot(xbar, main="Dekadal Rainfall Average 1981-2017 (mm)")
