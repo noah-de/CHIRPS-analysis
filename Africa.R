@@ -6,8 +6,11 @@ library(rgdal)
 # Gather all the data files into a list
 rasterlist1 <-  list.files('test', full.names = TRUE)
 
+# make as list of all but the most recent data file
+rasterlist <- head(rasterlist1, n = length(rasterlist1) - 1)
+
 # create a RasterStack from the list
-sRaster <- stack(rasterlist1)
+sRaster <- stack(rasterlist)
 
 # Calculate the mean of positive real numbers, removing NA values
 meanRemovesNA <- function(x) {
@@ -30,8 +33,8 @@ writeRaster(
 # plot the map (SUM of rainfall values from the data files)
 #plot(xbar, main = "Dekadal Rainfall Climatology 1981-2017 (mm)")
 
-# grab the last file from the list
-recent<-tail(rasterlist1, n=1)
+# grab the last file from the original file list
+recent <- tail(rasterlist1, n = 1)
 
 # dumb way to make a stack and remove the NAs
 latest <- calc(stack(recent, recent), meanRemovesNA)
@@ -39,4 +42,4 @@ latest <- calc(stack(recent, recent), meanRemovesNA)
 # hist(latest - xbar)
 
 # Calculate the anomaly
-plot(latest -  xbar, main = "Dekadal Rainfall Anomoly 1981-2017 (mm)")
+plot(latest -  xbar, main = "2017 Dekadal Rainfall Anomoly 1981-2016 (mm)")
