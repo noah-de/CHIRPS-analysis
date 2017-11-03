@@ -42,4 +42,4 @@ latest <- calc(stack(recent, recent), meanRemovesNA)
 # hist(latest - xbar)
 
 # Calculate the anomaly
-plot(latest -  xbar, main = "2017 Dekadal Rainfall Anomoly 1981-2016 (mm)")
+plot(latest -  xbar, col=rev(topo.colors(250)), main = "2017 Dekadal Rainfall Anomoly 1981-2016 (mm)")
