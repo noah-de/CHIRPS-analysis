@@ -4,7 +4,7 @@ library(raster)
 library(rgdal)
 
 # Gather all the data files into a list
-rasterlist1 <-  list.files('test', full.names = TRUE)
+rasterlist1 <-  list.files('TIF', full.names = TRUE)
 
 # make as list of all but the most recent data file
 rasterlist <- head(rasterlist1, n = length(rasterlist1) - 1)
